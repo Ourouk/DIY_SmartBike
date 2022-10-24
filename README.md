@@ -1,3 +1,2 @@
 # DIY_SmartBike
- -Alex 
- -Andrea
+	![image](https://github.com/Ourouk/DIY_SmartBike/raw/master/IOT.drawio.svg)
