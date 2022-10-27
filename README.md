@@ -17,7 +17,7 @@ This project is about providing all the innovations (and more) of the modern sma
 
 -  Android Dashboard providing useful information to the user.
 ## Design Information
- ![image](https://github.com/Ourouk/DIY_SmartBike/raw/master/IOT.drawio.svg)
+ ![image](https://github.com/Ourouk/DIY_SmartBike/raw/master/IOT.drawio.png)
 ### Layer 1 - Hardware Interaction
 Our Interactions with the hardware are going to be made using red-node and some python code. See below :
 - Camera
@@ -45,8 +45,13 @@ When the smartphone isn't near the bike, the bike switch to a lost mode, that us
 ### Layer 2.5
 Our servers will communicate to the Android Smartphone and the Pi (via Lora).
 They are storing all the localization and different data of the users to provide them with a map of their journey with their bike.
- #### Server Architecture
- Rocky Linux was chosen as the distribution of Linux that we will use. And for the different service, we will encapsulate them inside  dockers to provide a microservice design.
+#### Server Architecture
+Rocky Linux was chosen as the distribution of Linux that we will use. And for the different service, we will encapsulate them inside  dockers to provide a microservice design.
+
+#### Mosquitto-Eclipse Docker
+Will Recieve Data Provided By users.
+#### Red-Node Docker
+To provide Update to the Raspberry PI, when ask the server will connect in ssh via ansible and do the update.
 ### Layer 3 Update/Customer Service
 Remote access is done via a Wi-Fi connection with the Raspberry Pi which is disabled by default and can be enabled by the user if they need to. (aka help mode)
 ### Layer 4 External API Calls
