@@ -1,0 +1,16 @@
+
+# NODE RED start node red#
+>  node-red-start 
+forward port 1880 
+*todo https://nodered.org/docs/user-guide/runtime/securing-node-red
+
+# gps https://wiki.seeedstudio.com/Grove-GPS/
+pin RPISER  
+
+#LCD LED 
+pin i2c-( 1,2,3)
+
+# PYCAM
+you must enable using 
+> sudo raspi-config
+
