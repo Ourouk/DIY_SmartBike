@@ -1,0 +1,26 @@
+version: '3'
+services:
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - /opt/mongo:/data/db
+
+  eclipse-mosquitto:
+    image: eclipse-mosquitto
+    restart: always
+    volumes:
+      - /opt/mosquitto/config:/mosquitto/config
+      - /opt/mosquitto/data:/mosquitto/data
+      - /opt/mosquitto/log:/mosquitto/log
+
+  nodered:
+    image: nodered/node-red
+    restart: always
+    ports:
+      - "1880:1880"
+    volumes:
+      - /opt/node-red-data:/data

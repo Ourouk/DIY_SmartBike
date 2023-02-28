@@ -1,0 +1,1 @@
+FROM truecharts/node-red:latest
