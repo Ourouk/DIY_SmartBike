@@ -1,0 +1,118 @@
+\documentclass[12pt,a4paper]{report}
+
+% We don't use it because xelatex support unicode by default
+%\usepackage[utf8]{inputenc}  %mettre latin1 à la place de utf8 si vous utilisez latin1
+\usepackage{pdfpages}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage[sfdefault]{carlito}
+\renewcommand{\baselinestretch}{0}
+\usepackage[french, english]{babel}   %langue française et anglais. Si vous utilisez d'autres langues, ajoutez-les ici. Quand vous avez du texte en anglais, il faut ajouter la commande \selectlanguage{english}. Après, rappelez-vous de revenir au français avec \selectlanguage{french}
+\usepackage[maxlevel=3]{csquotes}
+\usepackage[backend=biber,style=numeric,isbn=false,sorting=none]{biblatex}
+%\usepackage{droit-fr}
+\DefineBibliographyStrings{french}{in={dans},inseries={dans}}
+\addbibresource{bibliographie/Protocole.bib} 
+
+%%defining the new style for legislation
+\DeclareBibliographyDriver{legislation}{%
+  \printnames{author}%
+  \newunit\newblock
+  \printfield{title}%
+  \newunit
+  \printfield{langid}%
+  \newunit
+  \printfield{shortjournal}%
+  \newunit
+  \printlist{publisher}%
+  \newunit
+  \printlist{location}%
+  \newunit
+  \printfield{year}%
+  \newunit
+  \printfield{number}%
+  \newunit
+  \finentry}
+
+
+
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry} %cette ligne permet de modifié la taille des marges
+
+\usepackage{graphicx}
+\usepackage{epigraph}
+\setlength\epigraphwidth{13cm}
+\usepackage[center,up,labelfont=bf]{caption}
+\usepackage{float}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{hyperref}% this line enable the redirecting from the table of contents
+\newcommand{\guil}[1]{\guillemotleft{#1}\guillemotright}    %guillemets 
+\newcommand{\guill}[1]{``{#1}''}     %guillements dans les guillemets
+\usepackage{gensymb}
+% used to remove space in list
+\usepackage{enumitem}
+\setlist{nosep}
+
+
+
+% This permit to modify easily the space on top and under chapter titles
+\usepackage{titlesec}{}
+\titleformat{\chapter}[display]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{10pt}{\Huge}
+% this alters "before" spacing (the second length argument) to 0
+\titlespacing*{\chapter}{0pt}{0pt}{15pt}
+
+%MPut number to the right
+\usepackage{titleps}
+\renewpagestyle{plain}{%
+\sethead{}{}{}
+\setfoot[\thepage][][]{}{}{\thepage}
+}%
+\pagestyle{plain}
+
+
+\begin{document}
+
+\selectlanguage{french}
+
+
+\input{titres/titre.tex}
+%\input{titres/garde.tex}
+
+%\pagenumbering{roman} % numérotation en chiffres romains
+%\setcounter{page}{1}
+
+%\input{titres/resume.tex}
+%\input{titres/abstract.tex}
+%\input{titres/remerciements.tex}
+
+\begin{singlespace}
+    \selectlanguage{french}
+    \tableofcontents % table des matières
+    %\listoffigures % si vous avez des images... si vous n'en avez pas, effacez cette ligne
+\end{singlespace}
+
+% fin numérotation en chiffres romains
+% début numérotation en chiffres arabs3
+\pagenumbering{arabic}
+\setcounter{page}{0}
+
+
+%dans les fichier vous trouverez des exemples d'usage des différentes commandes de LaTeX
+\begin{onehalfspace}
+\thispagestyle{empty}
+   	\input{textes/layer1.tex}
+   	\input{textes/layer2.tex}
+   	\input{textes/layer3.tex}
+   	\input{textes/layer4.tex}
+\end{onehalfspace}
+
+
+% Here you should put bibliography related content
+\printbibliography
+
+
+
+\end{document} 
