@@ -59,3 +59,40 @@ The Android application will need to use external services to provide the user w
 ## Post-Note
 This project is made for a school project and is totally free to use.
 And will not be maintained after this project end.
+
+
+
+
+
+# capteurs : 
+ liste de different capteurs 
+## ESP32
+*  GPS 
+
+*  ecran
+*  anthene lora
+## ESP8266
+* light sensor 
+* relay
+* 
+## Rpi
+* camera 
+* RFID
+* buzzer
+* LEDs
+* buttons
+* ecran LCD
+* temp and humidity         
+* accélérometre             |Ic2-3 
+
+# communications
+
+* ESP32 -> Rpi : LoRa
+* ESP8266 -> Rpi : MQTT Local 
+* Rpi -> phone : bluetooth 
+* Rpi -> phone panel : htpp ????
+* Rpi -> server MQTT  "public" : 
+* troubleshooting -> Rpi : VNC
+* APIs -> phones : HTTP rest
+* phones -> APIS : HTTP rest 
+* serveur -> DB :  nodered ?
