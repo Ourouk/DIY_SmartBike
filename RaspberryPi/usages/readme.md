@@ -8,6 +8,14 @@
 
     pin is I2C-1
 
+## gyroscope.py
+
+    script output regulary all data of gyroscope on json 
+
+    arg: / 
+
+    pin is I2C-2
+
 
 
 ## auto light 
