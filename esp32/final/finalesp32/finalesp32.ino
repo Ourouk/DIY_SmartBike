@@ -1,8 +1,18 @@
 // https://randomnerdtutorials.com/ttgo-lora32-sx1276-arduino-ide/
 
+
+/////////////////////////////////////////////////////
+//////////////////////LIBRAIRIES TO ADD///////////////
+//////////////////////////////////////////////////////
 // libs add adafruit ssd 1306 
-//   gfx  by adafruit
+// gfx  by adafruit
 // lora by sandeep m
+//
+// tinygpsplus by mikal hart
+// axp202x by lewis he 
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
 
 #include <SPI.h>
 #include <LoRa.h>
@@ -12,12 +22,10 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-/// GPS 
+// Libs for GPS 
 #include <TinyGPS++.h>
 #include <axp20x.h>
-//GPS 
-#define RXD2 5
-#define TXD2 4
+
 
 //define the pins used by the LoRa transceiver module
 #define SCK 5
@@ -27,9 +35,8 @@
 #define RST 14
 #define DIO0 26
 
-//433E6 for Asia
-//866E6 for Europe
-//915E6 for North America
+
+//866E6 for Europe   //915E6 for North America  //433E6 for Asia
 #define BAND 868.1E6
 
 //OLED pins
@@ -39,21 +46,21 @@
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
-//packet counter
-int counter = 0;
+// GPS PINS 
+#define RXD2 5
+#define TXD2 4
 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
-
-
+// GPS VARS
 TinyGPSPlus gps;
-
 HardwareSerial GPS(1);
 AXP20X_Class axp;
 
 
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
+
 void setup() {
   //initialize Serial Monitor
-  Serial.begin(9600);
+   Serial.begin(9600);
 
   //reset OLED display via software
   pinMode(OLED_RST, OUTPUT);
@@ -64,10 +71,20 @@ void setup() {
   //initialize OLED
   Wire.begin(OLED_SDA, OLED_SCL);
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3c, false, false)) { // Address 0x3C for 128x32
-    Serial.println(F("SSD1306 allocation failed"));
+    //Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
   
+  //initialize GPS
+  Wire.begin(21, 22);
+  axp.setPowerOutPut(AXP192_LDO2, AXP202_ON);
+  axp.setPowerOutPut(AXP192_LDO3, AXP202_ON);
+  axp.setPowerOutPut(AXP192_DCDC2, AXP202_ON);
+  axp.setPowerOutPut(AXP192_EXTEN, AXP202_ON);
+  axp.setPowerOutPut(AXP192_DCDC1, AXP202_ON);
+  GPS.begin(9600, SERIAL_8N1, RXD2, TXD2); 
+
+// OLED SCREEN
   display.clearDisplay();
   display.setTextColor(WHITE);
   display.setTextSize(1);
@@ -75,7 +92,7 @@ void setup() {
   display.print("LORA SENDER ");
   display.display();
   
-  Serial.println("LoRa Sender Test");
+//  Serial.println("LoRa Sender Test");
 
   //SPI LoRa pins
   SPI.begin(SCK, MISO, MOSI, SS);
@@ -83,85 +100,66 @@ void setup() {
   LoRa.setPins(SS, RST, DIO0);
   
   if (!LoRa.begin(BAND)) {
-    Serial.println("Starting LoRa failed!");
+//   Serial.println("Starting LoRa failed!");
     while (1);
   }
-  Serial.println("LoRa Initializing OK!");
+//  Serial.println("LoRa Initializing OK!");
   display.setCursor(0,10);
   display.print("LoRa Initializing OK!");
   display.display();
-  delay(2000);
-
-  Wire.begin(21, 22);
-  if (!axp.begin(Wire, AXP192_SLAVE_ADDRESS)) {
-    Serial.println("AXP192 Begin PASS");
-  } else {
-    Serial.println("AXP192 Begin FAIL");
-  }
-  axp.setPowerOutPut(AXP192_LDO2, AXP202_ON);
-  axp.setPowerOutPut(AXP192_LDO3, AXP202_ON);
-  axp.setPowerOutPut(AXP192_DCDC2, AXP202_ON);
-  axp.setPowerOutPut(AXP192_EXTEN, AXP202_ON);
-  axp.setPowerOutPut(AXP192_DCDC1, AXP202_ON);
-  GPS.begin(9600, SERIAL_8N1, RXD2, TXD2);   
-  Serial.println("Hello World !");
-
-
-
+  delay(1000);
 }
 
 void loop() {
    
-  Serial.print("Sending packet: ");
-  Serial.println(counter);
+  //Serial.print("Sending packet: ");
+  //Serial.println(counter);
 
   //Send LoRa packet to receiver
   LoRa.beginPacket();
-  LoRa.print("hello ");
-  LoRa.print(counter);
+  LoRa.print("{satellites:");
+  LoRa.print( gps.satellites.value());
+  LoRa.print(",time:");
+  LoRa.print(  (gps.time.hour()+2)%24  );
+  LoRa.print("/");
+  LoRa.print(gps.time.minute());
+  
+  LoRa.print(",lng:");
+  LoRa.print(gps.location.lng());
+  LoRa.print(",lat:");
+  LoRa.print(gps.location.lat());
+  LoRa.print(",alt:");
+  LoRa.print( gps.altitude.feet() / 3.2808);
+  LoRa.print(",speed:");
+  LoRa.print(gps.speed.kmph());
+  LoRa.print("}");
   LoRa.endPacket();
   
-  display.clearDisplay();
-  display.setCursor(0,0);
-  display.println("LORA SENDER");
-  display.setCursor(0,20);
-  display.setTextSize(1);
-  display.print("LoRa packet sent.");
-  display.setCursor(0,30);
-  display.print("Counter:");
-  display.setCursor(50,30);
-  display.print(counter);      
-  display.display();
 
-  Serial.print("Latitude  : ");
-  Serial.println(gps.location.lat(), 5);
-  Serial.print("Longitude : ");
-  Serial.println(gps.location.lng(), 4);
-  Serial.print("Satellites: ");
-  Serial.println(gps.satellites.value());
-  Serial.print("Altitude  : ");
-  Serial.print(gps.altitude.feet() / 3.2808);
-  Serial.println("M");
   Serial.print("Time      : ");
   Serial.print(gps.time.hour());
   Serial.print(":");
   Serial.print(gps.time.minute());
   Serial.print(":");
   Serial.println(gps.time.second());
-  Serial.print("Speed     : ");
-  Serial.println(gps.speed.kmph()); 
-  Serial.println("**********************");
+  Serial.print("Satellites: ");
+  Serial.println(gps.satellites.value());
 
-  smartDelay(1000);
 
-  if (millis() > 5000 && gps.charsProcessed() < 10)
-    Serial.println(F("No GPS data received: check wiring"));
-
-  counter++;
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.println("NBR GPS");
+  display.print( gps.satellites.value());
+  display.setCursor(0,20);
+  display.setTextSize(1);
+  display.print("LoRa packet sent.");
+  display.setCursor(0,30);
+  //display.print("Counter:");
+  //display.setCursor(50,30); 
+  display.display();
   
-  delay(10000);
+  smartDelay(1000);
 }
-
 
 static void smartDelay(unsigned long ms)
 {
