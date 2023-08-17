@@ -1,14 +1,18 @@
+// https://randomnerdtutorials.com/ttgo-lora32-sx1276-arduino-ide/
 
-/*
-  * source humidity  https://esp32io.com/tutorials/esp32-temperature-humidity-sensor
-  * source lora code  https://randomnerdtutorials.com/ttgo-lora32-sx1276-arduino-ide/
-  *  libs add 
-  *  adafruit ssd 1306 
-  *  gfx  by adafruit
-  *  lora by sandeep m
-  *  DHT sensor library by adafruit
-*/
 
+/////////////////////////////////////////////////////
+//////////////////////LIBRAIRIES TO ADD///////////////
+//////////////////////////////////////////////////////
+// libs add adafruit ssd 1306 
+// gfx  by adafruit
+// lora by sandeep m
+//
+// tinygpsplus by mikal hart
+// axp202x by lewis he 
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
 
 #include <SPI.h>
 #include <LoRa.h>
@@ -17,10 +21,11 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-///humidity
-#include <DHT.h>
-#define DHT_SENSOR_PIN  21 // ESP32 pin GIOP21 connected to DHT11 sensor
-#define DHT_SENSOR_TYPE DHT11
+
+// Libs for GPS 
+#include <TinyGPS++.h>
+#include <axp20x.h>
+
 
 //define the pins used by the LoRa transceiver module
 #define SCK 5
@@ -30,9 +35,8 @@
 #define RST 14
 #define DIO0 26
 
-//433E6 for Asia
-//866E6 for Europe
-//915E6 for North America
+
+//866E6 for Europe   //915E6 for North America  //433E6 for Asia
 #define BAND 868.1E6
 
 //OLED pins
@@ -42,18 +46,21 @@
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
+// GPS PINS 
+#define RXD2 5
+#define TXD2 4
 
+// GPS VARS
+TinyGPSPlus gps;
+HardwareSerial GPS(1);
+AXP20X_Class axp;
 
-
-DHT dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
 
-
 void setup() {
-  Serial.begin(9600);
-  dht_sensor.begin(); // initialize the DHT sensor
-  Serial.print("end begin");
+  //initialize Serial Monitor
+   Serial.begin(9600);
 
   //reset OLED display via software
   pinMode(OLED_RST, OUTPUT);
@@ -64,17 +71,28 @@ void setup() {
   //initialize OLED
   Wire.begin(OLED_SDA, OLED_SCL);
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3c, false, false)) { // Address 0x3C for 128x32
-    Serial.println(F("SSD1306 allocation failed"));
+    //Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
   
+  //initialize GPS
+  Wire.begin(21, 22);
+  axp.setPowerOutPut(AXP192_LDO2, AXP202_ON);
+  axp.setPowerOutPut(AXP192_LDO3, AXP202_ON);
+  axp.setPowerOutPut(AXP192_DCDC2, AXP202_ON);
+  axp.setPowerOutPut(AXP192_EXTEN, AXP202_ON);
+  axp.setPowerOutPut(AXP192_DCDC1, AXP202_ON);
+  GPS.begin(9600, SERIAL_8N1, RXD2, TXD2); 
+
+// OLED SCREEN
   display.clearDisplay();
   display.setTextColor(WHITE);
-  display.setTextSize(2);
+  display.setTextSize(1);
   display.setCursor(0,0);
+  display.print("LORA SENDER ");
   display.display();
   
-  Serial.println("LoRa Sender Test");
+//  Serial.println("LoRa Sender Test");
 
   //SPI LoRa pins
   SPI.begin(SCK, MISO, MOSI, SS);
@@ -82,82 +100,74 @@ void setup() {
   LoRa.setPins(SS, RST, DIO0);
   
   if (!LoRa.begin(BAND)) {
-    Serial.println("Starting LoRa failed!");
+//   Serial.println("Starting LoRa failed!");
     while (1);
   }
-  Serial.println("LoRa Initializing OK!");
+//  Serial.println("LoRa Initializing OK!");
   display.setCursor(0,10);
   display.print("LoRa Initializing OK!");
   display.display();
-  delay(2000);
-
+  delay(1000);
 }
 
 void loop() {
+   
+  //Serial.print("Sending packet: ");
+  //Serial.println(counter);
+
+  //Send LoRa packet to receiver
+  LoRa.beginPacket();
+  LoRa.print("{satellites:");
+  LoRa.print( gps.satellites.value());
+  LoRa.print(",time:");
+  LoRa.print(  (gps.time.hour()+2)%24  );
+  LoRa.print("/");
+  LoRa.print(gps.time.minute());
   
-  
-  // read humidity
-  float humi  = dht_sensor.readHumidity();
-  // read temperature in Celsius
-  float tempC = dht_sensor.readTemperature();
-
-
-  // check whether the reading is successful or not
-  if ( isnan(tempC) || isnan(humi)) {
-    Serial.println("Failed to read from DHT sensor!");
-    display.clearDisplay();
-    display.setCursor(0,0);
-    display.println("NO DATA RECEIVE");
-    display.display();
-  } else {
-    Serial.println("");
-    Serial.print("Humidity: ");
-    Serial.print(humi);
-    Serial.print("%");
-    Serial.print("  |  ");
-    Serial.print("Temperature: ");
-    Serial.print(tempC);
-    Serial.print("C");
-    //Send LoRa packet to receiver
-    LoRa.beginPacket();
-    LoRa.print("{humi:");
-    LoRa.print(humi);
-    LoRa.print(",tempC:");
-    LoRa.print(tempC);
-    LoRa.print("}");
-    LoRa.endPacket(); 
-    display.clearDisplay();
-    display.setCursor(0,0);
-    display.println("humidity: ");
-    display.setCursor(55,0);    
-    display.print(humi);
-    display.setCursor(0,20);
-    display.setTextSize(1);
-    display.print(" ");
-    display.setCursor(0,30);
-    display.print("Temp: ");
-    display.setCursor(50,30);
-    display.print(tempC);      
-    display.display();
-
-
-  }
-
+  LoRa.print(",lng:");
+  LoRa.print(gps.location.lng());
+  LoRa.print(",lat:");
+  LoRa.print(gps.location.lat());
+  LoRa.print(",alt:");
+  LoRa.print( gps.altitude.feet() / 3.2808);
+  LoRa.print(",speed:");
+  LoRa.print(gps.speed.kmph());
+  LoRa.print("}");
+  LoRa.endPacket();
   
 
-  // wait a 5 seconds between readings
-  delay(5000);
+  Serial.print("Time      : ");
+  Serial.print(gps.time.hour());
+  Serial.print(":");
+  Serial.print(gps.time.minute());
+  Serial.print(":");
+  Serial.println(gps.time.second());
+  Serial.print("Satellites: ");
+  Serial.println(gps.satellites.value());
 
+
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.println("NBR GPS");
+  display.print( gps.satellites.value());
+  display.setCursor(0,20);
+  display.setTextSize(1);
+  display.print("LoRa packet sent.");
+  display.setCursor(0,30);
+  //display.print("Counter:");
+  //display.setCursor(50,30); 
+  display.display();
   
-
+  smartDelay(1000);
 }
 
-
-
-
-
-
-
-
-
+static void smartDelay(unsigned long ms)
+{
+  unsigned long start = millis();
+  do
+  {
+    while (GPS.available())
+      gps.encode(GPS.read());
+  } while (millis() - start < ms);
+}
 

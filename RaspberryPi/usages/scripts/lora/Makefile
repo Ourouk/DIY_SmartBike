@@ -1,9 +1,17 @@
 # dragino lora testing
 # Single lora testing app
 
-default: main.cpp
-	gcc -Wall -o main main.cpp -lwiringPi -lwiringPiDev -lstdc++
-reference: mainb.cpp
-	gcc -Wall -o main mainb.cpp -lwiringPi -lwiringPiDev
-deploy: default
-	cp main /opt/diy_smartbike/sensor-loragps
+CC=g++
+CFLAGS=-c -Wall
+LIBS=-lwiringPi
+
+all: dragino_lora_app
+
+dragino_lora_app: main.o
+	$(CC) main.o  $(LIBS) -o dragino_lora_app
+
+main.o: main.cpp
+	$(CC) $(CFLAGS) main.cpp
+
+clean:
+	rm *.o dragino_lora_app	

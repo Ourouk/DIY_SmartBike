@@ -1,31 +1,58 @@
-
 /*******************************************************************************
- *
+ * tape rec for receive code 
  * Copyright (c) 2018 Dragino
  *
  * http://www.dragino.com
- *
-// sudo apt-get install wiringpi
-// sudo apt-get install libwiringpi-dev
-// gcc -Wall -o main main.cpp -lwiringPi -lwiringPiDev -lstdc++
+ *https://github.com/dragino/rpi-lora-tranceiver/blob/master/dragino_lora_app_w1/Makefile
  *******************************************************************************/
 
 #include <string>
-#include <iostream>
-using namespace std;
 #include <stdio.h>
+#include <dirent.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <string.h>
 #include <sys/time.h>
 #include <signal.h>
+#include <unistd.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 #include <sys/ioctl.h>
 
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
+
+typedef bool boolean;
+typedef unsigned char byte;
+
+static const int CHANNEL = 0;
+
+char message[256];
+
+bool sx1272 = true;
+
+byte receivedbytes;
+
+enum sf_t { SF7=7, SF8, SF9, SF10, SF11, SF12 };
+
+/*******************************************************************************
+ *
+ * Configure these values!
+ *
+ *******************************************************************************/
+
+// SX1272 - Raspberry connections
+int ssPin = 6;
+int dio0  = 7;
+int RST   = 0;
+
+// Set spreading factor (SF7 - SF12)
+sf_t sf = SF7;
+
+// Set center frequency
+uint32_t  freq = 868100000; // in Mhz! (868.1)
 
 
 // #############################################
@@ -146,40 +173,22 @@ using namespace std;
 #define MAP_DIO1_LORA_NOP      0x30  // --11----
 #define MAP_DIO2_LORA_NOP      0xC0  // ----11--
 
-// #############################################
-// #############################################
-//
-typedef bool boolean;
-typedef unsigned char byte;
+/* The address of the node which is 10 by default */
+uint8_t node_number = 10;
+byte msg[2] = {10, 0};
+int run = 1;
 
-static const int CHANNEL = 0;
+/*-----------------------------------------*/
+DIR *dir;
+struct dirent *dirent;
+char dev[16];      // Dev ID
+char devPath[128]; // Path to device
+char buf[256];     // Data from device
+char tmpData[6];   // Temp C * 1000 reported by device 
+char path[] = "/sys/bus/w1/devices"; 
+ssize_t numRead;
+/*-----------------------------------------*/
 
-char message[256];
-
-bool sx1272 = true;
-
-byte receivedbytes;
-
-enum sf_t { SF7=7, SF8, SF9, SF10, SF11, SF12 };
-
-/*******************************************************************************
- *
- * Configure these values!
- *
- *******************************************************************************/
-
-// SX1272 - Raspberry connections
-int ssPin = 6;
-int dio0  = 7;
-int RST   = 0;
-
-// Set spreading factor (SF7 - SF12)
-sf_t sf = SF7;
-
-// Set center frequency
-uint32_t  freq = 868100000; // in Mhz! (868.1)
-
-byte hello[32] = "HELLO";
 
 void die(const char *s)
 {
@@ -246,7 +255,7 @@ void SetupLoRa()
 
     if (version == 0x22) {
         // sx1272
-        // printf("SX1272 detected, starting.\n");
+        printf("SX1272 detected, starting.\n");
         sx1272 = true;
     } else {
         // sx1276?
@@ -257,7 +266,7 @@ void SetupLoRa()
         version = readReg(REG_VERSION);
         if (version == 0x12) {
             // sx1276
-            // printf("SX1276 detected, starting.\n");
+            printf("SX1276 detected, starting.\n");
             sx1272 = false;
         } else {
             printf("Unrecognized transceiver.\n");
@@ -361,13 +370,14 @@ void receivepacket() {
             } else {
                 rssicorr = 157;
             }
-            //Commented useless output
-            // printf("Packet RSSI: %d, ", readReg(0x1A)-rssicorr);
-            // printf("RSSI: %d, ", readReg(0x1B)-rssicorr);
-            // printf("SNR: %li, ", SNR);
-            // printf("Length: %i", (int)receivedbytes);
-            // printf("\n");
-            printf("%s\n", message);fflush(stdout);
+
+            //printf("Packet RSSI: %d, ", readReg(0x1A)-rssicorr);
+            //printf("RSSI: %d, ", readReg(0x1B)-rssicorr);
+            //printf("SNR: %li, ", SNR);
+            //printf("Length: %i", (int)receivedbytes);
+            //printf("\n");
+            //printf("Payload: %s\n", message);
+            printf("%s\n", message);
 
         } // received a message
 
@@ -431,10 +441,74 @@ void txlora(byte *frame, byte datalen) {
     printf("send: %s\n", frame);
 }
 
+/* Send a message every 3 seconds */
+void sigalarm_handler(int signal)
+{
+    msg[0] = node_number;
+    msg[1]++;
+ 
+    txlora(msg, sizeof(msg));
+    alarm(3);
+}
+
+void loop()
+{
+int fd = open(devPath, O_RDONLY);
+if(fd == -1){
+	perror ("Couldn't open the w1 device.");
+	//return 1;   
+}
+while((numRead = read(fd, buf, 256)) > 0){
+	strncpy(tmpData, strstr(buf, "t=") + 2, 5); 
+	float tempC = strtof(tmpData, NULL);
+	tempC = tempC / 1000;
+//printf("%.2f\n", tempC);
+
+/*-----------------------------------------*/
+
+int NegativeNumber;
+char SignNumber;
+
+int intpart = (int)tempC;
+    double decpart = tempC - intpart;
+    //printf("Num = %f, intpart = %d, decpart = %f\n", x, intpart, decpart);
+
+    decpart = decpart * 100;
+    int w = int (decpart);
+    if (w<0){
+        w = w * (-1);
+    }
+
+
+	if (intpart<0){
+		NegativeNumber = intpart * (-1);
+		SignNumber = 'N';
+	}
+	else {
+        SignNumber = 'P';
+        NegativeNumber = intpart;
+
+	}
+	if (intpart==0){SignNumber='Z';}
+
+	//printf("Sign : %c, int Number = %d\n",SignNumber,NegativeNumber);
+    //printf("Part1 = %d, Part2 = %d\n",intpart, w);
+
+	/*-----------------------------------------*/
+
+	//	printf("Device: %s  - ", dev); 			
+	//	printf("%.3f F\n\n", (tempC / 1000) * 9 / 5 + 32);
+	}
+close(fd);
+
+
+sleep(1000);
+}
+
 int main (int argc, char *argv[]) {
 
     if (argc < 2) {
-        printf ("Usage: argv[0] sender|rec [message]\n");
+        printf ("Usage: argv[0] sender|rec [node_number]\n");
         exit(1);
     }
 
@@ -448,6 +522,23 @@ int main (int argc, char *argv[]) {
     SetupLoRa();
 
     if (!strcmp("sender", argv[1])) {
+        dir = opendir(path);
+        if (dir != NULL){
+            while ((dirent = readdir (dir)))
+            // 1-wire devices are links beginning with 28-
+            if (dirent->d_type == DT_LNK && strstr(dirent->d_name, "28-") != NULL) { 
+                strcpy(dev, dirent->d_name);
+            //	printf("\nDevice: %s\n", dev);
+            }
+            (void) closedir(dir);
+            }
+            else{
+                perror ("Couldn't open the w1 devices directory");
+                //return 1;
+            }
+        // Assemble path to OneWire device
+	    sprintf(devPath, "%s/%s/w1_slave", path, dev);
+
         opmodeLora();
         // enter standby mode (required for FIFO loading))
         opmode(OPMODE_STANDBY);
@@ -460,11 +551,13 @@ int main (int argc, char *argv[]) {
         printf("------------------\n");
 
         if (argc > 2)
-            strncpy((char *)hello, argv[2], sizeof(hello));
+            node_number = atoi(argv[2]);
+        signal(SIGALRM, sigalarm_handler);
+        alarm(3);
 
         while(1) {
-            txlora(hello, strlen((char *)hello));
-            delay(5000);
+            loop();
+            usleep(1);
         }
     } else {
 
@@ -472,9 +565,8 @@ int main (int argc, char *argv[]) {
         opmodeLora();
         opmode(OPMODE_STANDBY);
         opmode(OPMODE_RX);
-        // printf("Listening at SF%i on %.6lf Mhz.\n", sf,(double)freq/1000000);
-        // printf("------------------\n");
-        string nodered_msg;
+        printf("Listening at SF%i on %.6lf Mhz.\n", sf,(double)freq/1000000);
+        printf("------------------\n");
         while(1) {
             receivepacket(); 
             delay(1);
