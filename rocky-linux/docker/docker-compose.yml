@@ -1,26 +1,39 @@
 version: '3'
 services:
-  mongo:
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    volumes:
-      - /opt/mongo:/data/db
-
-  eclipse-mosquitto:
+  mosquitto:
     image: eclipse-mosquitto
+    container_name: mosquitto
+    ports:
+      - "1883:1883"  # MQTT port
+    networks:
+      - mqtt_network
     restart: always
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
     volumes:
-      - /opt/mosquitto/config:/mosquitto/config
-      - /opt/mosquitto/data:/mosquitto/data
-      - /opt/mosquitto/log:/mosquitto/log
+      - mongodb_data:/data/db  # Persistence volume for MongoDB data
+    ports:
+      - "27017:27017"  # MongoDB port
+    networks:
+      - mqtt_network
+    restart: always
 
   nodered:
     image: nodered/node-red
-    restart: always
+    container_name: nodered
     ports:
-      - "1880:1880"
+      - "1880:1880"  # Node-RED UI port
+    networks:
+      - mqtt_network
     volumes:
-      - /opt/node-red-data:/data
+      - nodered_data:/data  # Persistence volume for Node-RED data and configuration
+    restart: always
+
+networks:
+  mqtt_network:
+
+volumes:
+  mongodb_data:
+  nodered_data:
