@@ -37,3 +37,44 @@ sudo apt install -y mosquitto-clients -y
 #mosquitto_pub -h test.mosquitto.org -t DIY-bike/sensor/temp -m 22.5
 #mosquitto_sub -h test.mosquitto.org -t DIY-bike/sensor/temp
 #sudo systemctl enable mosquitto.service
+
+
+#### BLUETOOTH
+#sudo apt-get install pi-bluetooth
+#sudo apt-get install bluetooth bluez blueman
+#sudo apt install bluez bluez-tools
+# https://www.theengineeringprojects.com/2023/07/control-home-appliances-with-rpi4-ble.html nope 
+#sudo apt-get --purge remove bluez -y 
+#cd ~; wget http://www.kernel.org/pub/linux/bluetooth/bluez-5.50.tar.xz
+#tar xvf bluez-5.50.tar.xz
+#sudo apt-get update
+#sudo apt-get install -y libusb-dev libreadline-dev libglib2.0-dev libudev-dev libdbus-1-dev libical-dev
+#cd bluez-5.50
+#./configure --enable-library
+#make -j4
+# fix bug add 1 include in a file  2 files in tools dir  thx to jaui
+#sudo make install
+# check btmon -v 
+# https://www.instructables.com/Control-Bluetooth-LE-Devices-From-A-Raspberry-Pi/ nope
+#export LDFLAGS=-lrt
+#sudo cp attrib/gatttool /usr/bin/
+# https://dikuw.wordpress.com/2019/12/05/setting-up-raspberry-pi-as-a-bluetooth-low-energy-peripheral/  nope
+#sudo apt-get install nodejs
+#sudo npm install bleno
+#sudo npm install onoff
+#sudo apt install libudev-dev
+
+# sudo npm install -g n
+# sudo n 8.9.0
+#sudo npm install bluetooth-hci-socket 
+
+#
+#sudo apt-get install bluez
+#hciconfig
+#sudo hciconfig hci0 up
+
+
+
+# node red
+
+node-red-pi --max-old-space-size=256

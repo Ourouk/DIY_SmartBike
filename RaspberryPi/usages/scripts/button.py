@@ -20,10 +20,8 @@ button = 3
 
 grovepi.pinMode(button,"INPUT")
 
-while True:
-    try:
-        print(grovepi.digitalRead(button))
-        time.sleep(.5)
 
-    except IOError:
-        print ("Error")
+print(grovepi.digitalRead(button) , end="")
+time.sleep(.5)
+
+
