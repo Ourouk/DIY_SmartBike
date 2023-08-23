@@ -8,6 +8,35 @@
 \usepackage{microtype}
 \usepackage{setspace}
 \usepackage[sfdefault]{carlito}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Define YAML style
+\lstdefinelanguage{YAML}{
+	keywords={true,false,null,y,n},
+	keywordstyle=\color{darkgray}\bfseries,
+	sensitive=false,
+	comment=[l]{\#},
+	morecomment=[s]{/*}{*/},
+	commentstyle=\color{purple}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	morestring=[b]',
+	morestring=[b]"
+}
+% Set the global style for listings
+\lstset{
+	basicstyle=\small\ttfamily,
+	numbers=left,
+	numberstyle=\tiny,
+	numbersep=5pt,
+	showstringspaces=false,
+	breaklines=true,
+	frame=tb,
+	backgroundcolor=\color{gray!10},
+	breakautoindent=true,
+	captionpos=b
+}
+
 \renewcommand{\baselinestretch}{0}
 \usepackage[french, english]{babel}   %langue française et anglais. Si vous utilisez d'autres langues, ajoutez-les ici. Quand vous avez du texte en anglais, il faut ajouter la commande \selectlanguage{english}. Après, rappelez-vous de revenir au français avec \selectlanguage{french}
 \usepackage[maxlevel=3]{csquotes}
@@ -15,6 +44,7 @@
 %\usepackage{droit-fr}
 \DefineBibliographyStrings{french}{in={dans},inseries={dans}}
 \addbibresource{bibliographie/Protocole.bib} 
+
 
 %%defining the new style for legislation
 \DeclareBibliographyDriver{legislation}{%
