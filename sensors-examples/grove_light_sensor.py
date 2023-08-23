@@ -45,7 +45,7 @@ light_sensor = 0
 
 # Connect the LED to digital port D4
 # SIG,NC,VCC,GND
-led = 6
+led = 4
 
 # Turn on LED once sensor exceeds threshold resistance
 threshold = 10
