@@ -5,6 +5,9 @@ services:
     container_name: mosquitto
     ports:
       - "1883:1883"  # MQTT port
+    volumes:
+      - ./mosquitto/config:/mosquitto/config # Persistence volume for mosquitto data
+      - ./mosquitto/data:/mosquitto/data
     networks:
       - mqtt_network
     restart: always
