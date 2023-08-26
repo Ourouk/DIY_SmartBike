@@ -18,7 +18,7 @@ a = LSM6DS3()
 
 #while 1 :
 #time.sleep(5)
-'''
+
 gyroscope = {
     "gyroscope":{
         "Rotation" :{
@@ -30,7 +30,8 @@ gyroscope = {
             "X": a.readRawAccelX(),
             "Y": a.readRawAccelY(),
             "Z": a.readRawAccelZ()
-        }
+        },
+       
     }
 }
 '''
@@ -39,7 +40,7 @@ gyroscope = {
         "Y":a.getYRotation(),
         "Z":a.getZRotation()
         }
-
+'''
     
 y = json.dumps(gyroscope)
 print(gyroscope , end ="")

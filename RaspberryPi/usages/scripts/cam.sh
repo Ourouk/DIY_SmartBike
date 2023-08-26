@@ -1,2 +1,1 @@
-#Fixing Git
-$ raspistill -o tmp/img.jpg
+ raspistill -o img.jpg
