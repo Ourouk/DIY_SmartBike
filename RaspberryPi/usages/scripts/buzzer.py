@@ -1,3 +1,4 @@
+#Fixing Git
 #!/usr/bin/env python
 #
 # GrovePi Example for using the Grove Buzzer (http://www.seeedstudio.com/wiki/Grove_-_Buzzer)
