@@ -6,8 +6,8 @@ services:
     ports:
       - "1883:1883"  # MQTT port
     volumes:
-      - ./mosquitto/config:/mosquitto/config # Persistence volume for mosquitto data
-      - ./mosquitto/data:/mosquitto/data
+      - mosquitto_config:/mosquitto/config # Persistence volume for mosquitto data
+      - mosquitto_data:/mosquitto/data
     networks:
       - mqtt_network
     restart: always
@@ -40,3 +40,5 @@ networks:
 volumes:
   mongodb_data:
   nodered_data:
+  mosquitto_config:
+  mosquitto_data:
