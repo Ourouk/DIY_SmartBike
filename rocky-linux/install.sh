@@ -20,6 +20,7 @@ sudo usermod -aG docker $USER
 sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 
+
 echo "A reboot is necessary !"s
 echo "Do you want to reboot the computer? (y/n)"
 read answer
