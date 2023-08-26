@@ -729,3 +729,11 @@ fabric.properties
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/latex,python,c,java,kotlin,android,androidstudio
+
+
+
+# nodred
+NodeRed_data/
+./NodeRed_data/
+
+RaspberryPi/usages/scripts/lora/dragino_lora_app
