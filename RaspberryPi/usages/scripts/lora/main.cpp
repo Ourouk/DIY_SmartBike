@@ -172,6 +172,7 @@ uint32_t  freq = 868100000; // in Mhz! (868.1)
 #define MAP_DIO1_LORA_RXTOUT   0x00  // --00----
 #define MAP_DIO1_LORA_NOP      0x30  // --11----
 #define MAP_DIO2_LORA_NOP      0xC0  // ----11--
+#define CRC_POLYNOMIAL 0x3185 // CRC-16 CCITT polynomial
 
 /* The address of the node which is 10 by default */
 uint8_t node_number = 10;
@@ -188,7 +189,6 @@ char tmpData[6];   // Temp C * 1000 reported by device
 char path[] = "/sys/bus/w1/devices"; 
 ssize_t numRead;
 /*-----------------------------------------*/
-
 
 void die(const char *s)
 {
@@ -266,7 +266,7 @@ void SetupLoRa()
         version = readReg(REG_VERSION);
         if (version == 0x12) {
             // sx1276
-            printf("SX1276 detected, starting.\n");
+         //   printf("SX1276 detected, starting.\n");
             sx1272 = false;
         } else {
             printf("Unrecognized transceiver.\n");
@@ -377,8 +377,56 @@ void receivepacket() {
             //printf("Length: %i", (int)receivedbytes);
             //printf("\n");
             //printf("Payload: %s\n", message);
-            printf("%s\n", message);
-
+            
+            
+            uint16_t crc = 0xFFFF;
+            //Custom CRC
+            for(int i=0; i<250;i++)
+            {
+                if(message[i] != '}' && message[i]!= '\0'){
+                    crc ^= (int)message[i];
+                    for (int j = 0; j < 8; j++) {
+                        if (crc & 0x0001) {
+                            crc = (crc >> 1) ^ CRC_POLYNOMIAL;
+                        } else {
+                            crc >>= 1;
+                        }
+                    continue;
+                    }
+                }
+                else if(message[i] == '}')
+                {
+                    crc ^= (int)message[i];
+                    for (int j = 0; j < 8; j++) {
+                        if (crc & 0x0001) {
+                            crc = (crc >> 1) ^ CRC_POLYNOMIAL;
+                        } else {
+                            crc >>= 1;
+                        }
+                    }
+                    char buff[4];
+                    strncpy(buff, message + i+1,4);
+                    int crc_in;
+                    if (sscanf(buff, "%d", &crc_in) != 1) {
+                        break;
+                    }else{
+                        if(crc == crc_in)
+                        {
+                            char actualmessage[250];
+                            strncpy(actualmessage, message,i);
+                            printf(" %s}\n", actualmessage);
+                            fflush(stdout);
+                        }else{
+                        }
+                    }
+                    
+                }else{
+                    break;
+                }
+        
+            }
+            
+            
         } // received a message
 
     } // dio0=1
@@ -565,8 +613,8 @@ int main (int argc, char *argv[]) {
         opmodeLora();
         opmode(OPMODE_STANDBY);
         opmode(OPMODE_RX);
-        printf("Listening at SF%i on %.6lf Mhz.\n", sf,(double)freq/1000000);
-        printf("------------------\n");
+    //    printf("Listening at SF%i on %.6lf Mhz.\n", sf,(double)freq/1000000);
+    //    printf("------------------\n");
         while(1) {
             receivepacket(); 
             delay(1);

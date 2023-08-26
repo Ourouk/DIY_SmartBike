@@ -47,8 +47,11 @@
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
 // GPS PINS 
-#define RXD2 5
-#define TXD2 4
+#define RXD2 16  // 4  // BREAK OLED it s normal
+#define TXD2 17  // 5
+
+//CRC 
+#define CRC_POLYNOMIAL 0x3185 // CRC-16 CCITT polynomial
 
 // GPS VARS
 TinyGPSPlus gps;
@@ -109,42 +112,40 @@ void setup() {
   display.display();
   delay(1000);
 }
-
+uint16_t calculate_crc(const char *data, size_t length);
 void loop() {
    
   //Serial.print("Sending packet: ");
   //Serial.println(counter);
 
   //Send LoRa packet to receiver
+  std::string buff;char buffer[20];
+  buff.append("{name:");
+  buff.append("Rpi");
+  buff.append(",satel:");
+  std::sprintf(buffer, "%u", gps.satellites.value());
+  buff.append(buffer);
+  buff.append(",lon:");
+  std::sprintf(buffer, "%u", gps.location.lng());
+  buff.append(buffer);
+  buff.append(",lat:");
+  std::sprintf(buffer, "%u", gps.location.lat());
+  buff.append(buffer);
+  buff.append(",speed:");
+  std::sprintf(buffer, "%u",gps.speed.kmph()/3.6);
+  buff.append(buffer);
+  buff.append(",heading:");
+  std::sprintf(buffer, "%u", gps.course.deg());
+  buff.append(buffer);
+  buff.append("}");
+  uint16_t crc = calculate_crc(buff.c_str(), buff.size());
+  std::sprintf(buffer, "%u", crc);
+  buff.append(buffer);
+
+  Serial.println(buff.c_str());
   LoRa.beginPacket();
-  LoRa.print("{satellites:");
-  LoRa.print( gps.satellites.value());
-  LoRa.print(",time:");
-  LoRa.print(  (gps.time.hour()+2)%24  );
-  LoRa.print("/");
-  LoRa.print(gps.time.minute());
-  
-  LoRa.print(",lng:");
-  LoRa.print(gps.location.lng());
-  LoRa.print(",lat:");
-  LoRa.print(gps.location.lat());
-  LoRa.print(",alt:");
-  LoRa.print( gps.altitude.feet() / 3.2808);
-  LoRa.print(",speed:");
-  LoRa.print(gps.speed.kmph());
-  LoRa.print("}");
+  LoRa.print(buff.c_str());
   LoRa.endPacket();
-  
-
-  Serial.print("Time      : ");
-  Serial.print(gps.time.hour());
-  Serial.print(":");
-  Serial.print(gps.time.minute());
-  Serial.print(":");
-  Serial.println(gps.time.second());
-  Serial.print("Satellites: ");
-  Serial.println(gps.satellites.value());
-
 
   display.clearDisplay();
   display.setCursor(0,0);
@@ -169,5 +170,22 @@ static void smartDelay(unsigned long ms)
     while (GPS.available())
       gps.encode(GPS.read());
   } while (millis() - start < ms);
+}
+
+uint16_t calculate_crc(const char *data, size_t length) {
+    uint16_t crc = 0xFFFF;
+    
+    for (size_t i = 0; i < length; i++) {
+        crc ^= (uint16_t)data[i];
+        for (int j = 0; j < 8; j++) {
+            if (crc & 0x0001) {
+                crc = (crc >> 1) ^ CRC_POLYNOMIAL;
+            } else {  
+                crc >>= 1;
+            }
+        }
+    }
+    
+    return crc;
 }
 
