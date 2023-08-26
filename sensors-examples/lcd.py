@@ -6,7 +6,7 @@
 #
 # Have a question about this example?  Ask on the forums here:  http://forum.dexterindustries.com/c/grovepi
 #
-# PUT on I2C
+
 
 from grove_rgb_lcd import *
 
@@ -18,5 +18,5 @@ for c in range(0,255):
     setRGB(c,255-c,0)
     time.sleep(0.01)
 
-
+setRGB(0,255,0)
 setText("will t es beau, deff ton exam")
