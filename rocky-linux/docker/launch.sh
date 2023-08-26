@@ -6,8 +6,7 @@ SERVICE_NAME="omgwtfssl"
 # Specify the path to the file you want to check
 FILE_PATH="ca-key.pem"
 
-#Check if user run this script as root
-if [ $UID != 0 ]; then
+if [ "$EUID" -ne 0 ]; then
     echo "Please run this script with sudo:"
     sudo "$0" "$@"
     exit 1

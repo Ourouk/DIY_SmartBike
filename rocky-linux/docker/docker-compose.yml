@@ -4,10 +4,10 @@ services:
     build: ./eclipse-mosquitto
     container_name: mosquitto
     ports:
-      - "1883:1883"  # MQTT port
+      - "8883:8883"  # MQTT port
     volumes:
       - mosquitto_config:/mosquitto/config # Persistence volume for mosquitto data
-      - mosquitto_data:/mosquitto/data
+      - mosquitto_data:/mosquitto/data:Z 
       - ./certs:/certs:rZ
     networks:
       - mqtt_network
@@ -17,7 +17,7 @@ services:
     image: mongo
     container_name: mongodb
     volumes:
-      - mongodb_data:/data/db  # Persistence volume for MongoDB data
+      - mongodb_data:/data/db:Z   # Persistence volume for MongoDB data
       - ./certs:/certs:rZ
     ports:
       - "27017:27017"  # MongoDB port
@@ -33,7 +33,7 @@ services:
     networks:
       - mqtt_network
     volumes:
-      - nodered_data:/data  # Persistence volume for Node-RED data and configuration
+      - nodered_data:/data:Z  # Persistence volume for Node-RED data and configuration
       - ./certs:/certs:rZ
     restart: always
 
