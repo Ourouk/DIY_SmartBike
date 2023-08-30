@@ -1,5 +1,0 @@
-FROM nodered/node-red:latest
-
-# Copy a custom configuration file to the container
-COPY setting-custom.js /data/settings.js
-

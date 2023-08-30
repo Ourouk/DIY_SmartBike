@@ -15,10 +15,30 @@ dnf upgrade -y
 
 
 groupadd docker
-sudo usermod -aG docker $USER
+usermod -aG docker $USER
 
-sudo systemctl enable docker.service
-sudo systemctl enable containerd.service
+systemctl enable docker.service
+systemctl enable containerd.service
+
+firewall-cmd --permanent --new-service=nodejs_app
+firewall-cmd --permanent --service=nodejs_app --set-description="Node.js Application"
+firewall-cmd --permanent --service=nodejs_app --add-port=1880/tcp
+firewall-cmd --permanent --add-service=nodejs_app
+
+firewall-cmd --permanent --new-service=mosquitto
+firewall-cmd --permanent --service=mosquitto --set-description="Mosquitto MQTT"
+firewall-cmd --permanent --service=mosquitto --add-port=8883/tcp
+firewall-cmd --permanent --add-service=mosquitto
+
+firewall-cmd --permanent --new-service=mongodb
+firewall-cmd --permanent --service=mongodb --set-description="MongoDB Service"
+firewall-cmd --permanent --service=mongodb --add-port=27017/tcp
+firewall-cmd --permanent --add-service=mongodb
+
+firewall-cmd --reload
+
+
+#TODO: Maybe add a VPN service to encrypt all trafic could help ?
 
 
 echo "A reboot is necessary !"s
@@ -31,6 +51,3 @@ if [ "$answer" != "${answer#[Yy]}" ] ;then
 else
     echo "Reboot cancelled."
 fi
-
-#Maybe add a VPN service to encrypt all trafic could help ?
-

@@ -1,6 +1,0 @@
-FROM eclipse-mosquitto:latest
-
-# Copy a custom configuration file to the container
-COPY mosquitto-custom.conf /mosquitto/config/mosquitto.conf
-COPY password_file /mosquitto/config/password_file
-
