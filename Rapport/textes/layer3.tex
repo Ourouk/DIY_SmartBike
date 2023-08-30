@@ -1,1 +1,17 @@
-\chapter{Maintenance et Mise à jour}
+\chapter{sécurité}
+\section{mot de passe}
+
+ nous avons pris des mesures rigoureuses. Les mots de passe ont été stratégiquement appliqués à divers niveaux de notre système, notamment sur les connexions SSH, Node-RED et MongoDB. Cette approche multicouche renforce la confidentialité des données, prévenant tout accès non autorisé et assurant une expérience utilisateur sûre et protégée à chaque étape.
+ 
+\section{Sécuriser les communications}
+
+nous avons adopté une approche intégrée. Les communications au sein de notre système sont désormais protégées par des certificats de sécurité pour MQTT, MongoDB et Node-RED. Ces certificats agissent comme des boucliers numériques, garantissant la confidentialité des échanges et prévenant toute intrusion non autorisée
+
+
+\section{API et applications externes utilisées}
+
+chaque requête API est étroitement surveillée et protégée par des tokens de connexion. Ces tokens agissent comme des gardiens numériques, permettant uniquement l'accès autorisé aux informations sensibles. Cette stratégie de sécurité robuste garantit que seules les interactions légitimes ont accès.
+
+\section{Docker}
+
+ nous avons opté pour Docker en tant qu'outil de protection supplémentaire. Les conteneurs Docker offrent une isolation rigoureuse pour chaque application et service, empêchant la propagation de vulnérabilités potentielles.

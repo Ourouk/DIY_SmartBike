@@ -1,1 +1,88 @@
-\chapter{Interaction avec des services en ligne}
+\chapter{conclusion}
+
+
+\section{Alexandre}
+\subsection{ niveau de connaissance avant }
+\begin{itemize}
+    \item en développement: java script et python  mon niveau se reposait sur mes connaissances d'algorithmie.
+
+    \item je ne connaissais pas node red avant de commencer le projet.
+
+    \item en électronique: je connaissais bien le fonctionnement de composant électronique.
+
+    \item en système : j'avais de bonnes connaissances en linux 
+ \end{itemize}    
+\subsection{niveau de connaissance après le projet }
+\begin{itemize}
+    \item en développement java script , j'ai appris à utiliser node js , le gestionnaire de package npm , ainsi que pas mal de notions spécifiques a la programmation java script.
+
+    \item en python, j'ai appris à utiliser de nombreuses librairies, ainsi, j'ai appris une partie du style de programmation.
+    
+   \item je maîtrise globalement node red. 
+
+    \item en électronique, j'ai consolidé mes connaissances sur comment fonctionnent certains capteurs. 
+
+    \item en système : j'ai renforcé mes connaissances en configurations de fichiers , comment fonctionne le système d'exploitation et les services.
+
+   \item suite à de nombreux bugs , j'ai également amélioré ma connaissance de git. 
+    
+    \item j'ai appris aussi à mieux comprendre comment résoudre tout type d'erreurs.
+
+ \end{itemize}    
+\subsection{les difficultés rencontrés}
+\begin{itemize}
+    \item problèmes d'horloge avec le Raspberry pi, ce qui a engendré des problèmes de git et d'installation de package.
+    \item énorme problème d'utilisation du Bluetooth qui nous a contraint à rechanger toute notre architecture initiale. 
+    \item problème de pi Cam , après de nombreuses tentatives , il s'avère que le problème était hardware.
+    \item problème de librairie python l'import de grouvepi ne s'effectuait pas correctement
+    \item problème pour comprendre comment injecter un point sur worldmap , il fallait mettre le payload en format json et non en string comme tous les autres nodes.
+    \item difficulté à comprendre le fonctionnement de certains capteurs
+    \itemproblème d'interaction avec esp8266.
+    
+
+ \end{itemize}
+\section{Andrea}
+\subsection{ Connaissance avant projet }
+    \begin{itemize}
+        \item Base intermédiaire en linux -> systemd/gestion des droits
+        \item Cours de microcontrolleur pour ce qui est des esp
+        \item Docker Intermédiaire
+        \item Débutant Python
+        \item Débutant Javascript/NodeJS
+        \item Base de git
+        \item Aucune connaissance préalable sur mqtt/nodejs/no-sql
+    \end{itemize}
+\subsection{ Connaissance Post-projet }
+     \begin{itemize}
+        \item Base intermédiaire en linux -> Amélioration de la compréhension systemd/gestion des droits 
+        \item Cours de microcontrolleur pour ce qui est des esp utilisation réel de certaines notions
+        \item Docker Intermédiaire -> utilisation plus poussée des volumes et de compose
+        \item Débutant Python -> Amélioration notable
+        \item Débutant Javascript/NodeJS -> Connaissance de base + NPM qui permet de faire des choses intéressantes très rapidement
+        \item Base de git -> problem solving dû à des probléme d'horloges
+        \item Aucune connaissance préalable sur mqtt/nodejs/no-sql, Introduction comprise et mon intérêt est présent.
+    \end{itemize}
+\subsection{les difficultés rencontrées}
+J'ai eu moins de temps sur le projet que Alexandre, je suis donc souvent intervenu lors de problème qui bloquait depuis longtemps.
+\begin{itemize}
+    \item Bulleyes -> nous avons installé la version le plus récent de raspian ça a causé de nombreux problèmes aux niveaux de l'installation de grove pi. On a dû donc trouvé des fix en cherchant beaucoup.
+    \item Le time gate, l'horloge de la raspberryPi n'était pas à jour suite à des problèmes avec NTP.
+    On a dû fix de nombreux problèmes suite à ça :
+    \begin{itemize}
+        \item git qui buguait complétement,
+        \item nodered ne savait plus installer d'addons
+        \item le script d'installation officiel de nodered ne fonctionnait pas → installation de nodered via NPM
+    \end{itemize}
+    \item Connexion LORA plein d'artefact, ajout d'un CRC à la main
+    \item Communication compliquée entre le serveur et la rpi → utilisation d'un VPN local pour éviter des problèmes de changement d'ip et permettre le travail à distance
+    \item Problème de droit lors du lancement de nodejs via systemd, en effet nous n'avions pas ajouté les droits d'accès aux gpio à l'utilisateur nodered.
+    \item Problème de firewall, configuration de firewalld
+    \item Problème étrange de lecture des certificats générés, où les serveurs ne savait pas les lires -> fix avec un script d'installation.
+    \item Probablement plein de petit problèmes intermédiaires, dont je ne me rappelle pas..
+\end{itemize}
+\subsection{Conclusion personnelle sur le projet}
+Le projet m'a vraiment intéressé et j'ai aimé pouvoir jouer avec toutes ses technologies, mais le fait de devoir incorporer des technologies et fonctionnalité pas réellement nécessaire au projet. Dans un objectif de dire qu'on l'a fait, a réduit mon enthousiasme. 
+
+J'aurais apprécié un peu plus de liberté dans le projet.
+
+La parenthèse conclue, je compte réutiliser mqtt si j'en ai l'occasion, et continuer à utiliser des rpi pour héberger de petits projets rapidement, et ça m'a donné envie de m'intéresser à la domotique.
