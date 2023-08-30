@@ -735,5 +735,17 @@ fabric.properties
 # nodred
 NodeRed_data/
 ./NodeRed_data/
-
+#Ignore built binary
 RaspberryPi/usages/scripts/lora/dragino_lora_app
+
+
+#Ignore Security files
+rocky-linux/docker/certs/ca-key.pem
+rocky-linux/docker/certs/ca.pem
+rocky-linux/docker/certs/ca.srl
+rocky-linux/docker/certs/cert.pem
+rocky-linux/docker/certs/key.csr
+rocky-linux/docker/certs/key.pem
+rocky-linux/docker/certs/openssl.cnf
+rocky-linux/docker/certs/secret.yaml
+rocky-linux/docker/eclipse-mosquitto/password_file
