@@ -1,4 +1,17 @@
 \chapter{Hardware}
 \section{Raspberry Pi}
+L'intégration d'une Raspberry Pi dans l'écosystème de l'Internet des Objets (IoT) est une démarche pragmatique et fonctionnelle. Avec la version récente de Raspbian, baptisée Bullseye, l'accent est mis sur la stabilité et la compatibilité, ce qui en fait un choix solide pour les projets IoT. En utilisant cette configuration, il est possible de mettre en place des dispositifs qui collectent des données provenant de capteurs divers et les transmettent à des systèmes centraux pour analyse.
+Nous combinons les capacité de la rpi avec Node-red,  en tant qu'outil de programmation visuelle, facilite la création de flux de données et d'automatisations en utilisant des nœuds interconnectés (nous y revienderons plus tard).
+\subsection{GrovePi}
+GrovePi, une extension matérielle conçue pour la Raspberry Pi, constitue une solution intéressante pour étendre les capacités de la carte dans le domaine de l'Internet des Objets (IoT). En intégrant des connecteurs Grove standardisés, GrovePi simplifie la connexion de divers capteurs et actionneurs sans nécessiter de soudure ou de câblage complexe.
+
+Nous avons utilisé les bibliothèques standarts fournies par le projets, il est à noté que nous avons du faire de petite modifications, pour rendre compatible grovePI et Bulleyes.
+\subsection{LORA HAT}
 \section{ESP32}
+L'ESP32 intègre un processeur à deux cœurs, une connectivité Wi-Fi et Bluetooth, ainsi qu'une variété d'interfaces périphériques. Grâce à sa puissance de traitement, il peut exécuter des tâches complexes et prendre en charge des fonctionnalités avancées. En tant que plate-forme de développement, l'ESP32 est pris en charge par diverses bibliothèques et outils de programmation, ce qui en fait un choix polyvalent pour les développeurs.
+
+Il recoit des données du GPS (via les gpip)et les envoies via LORA à notre RPI.
 \section{ESP8266}
+Ce module est doté d'un microcontrôleur intégré avec une connectivité Wi-Fi intégrée. Bien que moins puissant que l'ESP32, l'ESP8266 reste tout à fait capable d'exécuter des tâches IoT courantes telles que la collecte et la transmission de données. Son faible coût et sa faible consommation d'énergie en font un choix populaire pour les projets nécessitant une connectivité Wi-Fi.
+
+Dans le cadre de notre projet sont utilisations reste très basique, mais nous avons eu l'occasion d'entrevoir son grand potentiel.  Simple activation de led.

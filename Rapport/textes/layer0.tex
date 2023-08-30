@@ -1,0 +1,99 @@
+\chapter*{Introduction}
+\section*{Le Prototype Révolutionnaire de Vélo Intelligent}
+
+Dans le vaste panorama de l'innovation technologique, émerge une étoile qui brille pour tous. Notre projet, porteur de changement, aspire à réaliser un rêve partagé : rendre les avantages des vélos intelligents modernes accessibles à chacun, quel que soit le portefeuille. Le prototype que nous présentons aujourd'hui s'épanouit pour concrétiser cette vision inclusive.
+
+À travers cette initiative, nous aspirons à donner à tous les passionnés de la mobilité à deux roues les opportunités et les prouesses de l'univers des vélos intelligents, sans égard aux contraintes financières. Ce projet englobe une gamme d'innovations qui repoussent les frontières de la sécurité, de la praticité et de la connectivité pour tous les cyclistes.
+
+Examinons de plus près ce prototype qui brille par ses caractéristiques exceptionnelles :
+
+\begin{itemize}
+	\item \textbf{Détection d'Accident avec Caméra de Bord:} Une caractéristique qui va au-delà de la simple sécurité en offrant une couche supplémentaire de protection. Non seulement ce vélo peut détecter les accidents potentiels, mais il peut également enregistrer ces moments cruciaux grâce à une caméra embarquée .
+	\item \textbf{Déverrouillage du Vélo via RFID:} La commodité est à l'honneur avec cette fonctionnalité. Grâce à la technologie RFID, il vous suffit d'approcher votre vélo pour qu'il se déverrouille automatiquement, éliminant ainsi le besoin de clés physiques pour garentir une sécurité maximal.
+	\item \textbf{Détection de Vol:} Pour dissuader les voleurs et protéger votre investissement, ce vélo intelligent est équipé d'un système de détection de vol. En cas d'une tentative d'ouverture forcée, le vélo saura réagir.
+	\item \textbf{Traceur GPS:} La perte de votre vélo ne sera plus source d'inquiétude grâce au traceur GPS intégré. Même lorsque vous n'êtes pas à proximité, vous pourrez localiser votre vélo sur une carte en temps réel.
+	\item \textbf{Éclairage Automatique:} Adaptabilité est le maître-mot avec cet éclairage automatique. Le capteur de lumière ambiante ajuste automatiquement l'éclairage du vélo en fonction des conditions extérieures, garantissant une visibilité optimale à tout moment.
+	\item \textbf{Sauvegarde sur un Cloud Dédié:} Toutes les informations pertinentes liées à votre vélo seront sauvegardées de manière sécurisée sur un cloud spécialement dédié, garantissant que vous ne perdrez jamais de données cruciales.
+	\item \textbf{Tableau de Bord Android:} Pour une expérience utilisateur enrichissante, ce vélo intelligent est livré avec un tableau de bord fournissant une mine d'informations utiles à portée de main.
+\end{itemize}
+
+En résumé, ce prototype de vélo intelligent incarne une démarche qui met la technologie au service de tous. Il ouvre la voie à une ère où les avantages des vélos intelligents ne sont plus réservés à quelques privilégiés, mais deviennent une réalité tangible pour tous les amateurs de deux-roues. Restez à l'écoute pour découvrir comment ce projet ambitieux pourrait redéfinir notre façon de percevoir la mobilité urbaine.
+\subsection{l architecture dossier}
+
+Git s'est imposé comme l'outil clé favorisant le travail d'équipe, l'organisation du code et la traçabilité des modifications dans notre projet de vélo intelligent. Toutefois, pour des raisons structurelles du système, certains éléments nécessaires ne sont pas inclus, car ils doivent résider à des emplacements spécifiques. Cette approche responsable vise à garantir la sécurité des données tout en tirant parti des avantages de Git pour l'innovation collaborative.
+
+en dossier principal, on retrouve:
+
+le dossier esp32 qui regroupe tous les codes de test Arduino et un dossier final qui mélange le code créé dans les autres dossiers ( finalesp32 ). 
+
+dans le dossier esp8266, on retrouve le code python de test et le code final en Arduino.
+
+dans le dossier sensor exemple, on retrouve tous les codes de tests des composants qui ont été la base du développement des codes finaux. 
+
+le dossier rapport contient l'architecture Latex de ce rapport. 
+
+le dossier RaspberryPi contient le code de node red , le code de chaque sous script exécuté par node red. 
+
+dans le dossier rocky-linux on y retrouve tous les différents dockers et leur installation. 
+
+
+\noindent
+voici le résultat de la commande tree -d -a de notre archive :
+\begin{lstlisting}[style=tree]
+	#TODO: regenerate an update of this
+	├── .git
+	│   ├── branches
+	│   ├── hooks
+	│   ├── info
+	│   ├── logs
+	│   ├── objects
+	│   │   ├── info
+	│   │   └── pack
+	│   └── refs
+	│       ├── heads
+	│       ├── remotes
+	│       │   └── origin
+	│       └── tags
+	├── esp32
+	│   ├── accelero
+	│   ├── accelerometre
+	│   │   └── main
+	│   ├── final
+	│   │   ├── finalesp32
+	│   │   └── main
+	│   ├── gps
+	│   │   └── m
+	│   ├── lora
+	│   │   └── main
+	│   └── temp and humidity detector
+	│       └── main
+	│           └── main
+	├── esp8266
+	│   └── arduino
+	│       └── esp8266
+	├── Rapport
+	│   ├── bibliographie
+	│   ├── media
+	│   │   └── images
+	│   ├── textes
+	│   └── titres
+	├── RaspberryPi
+	│   └── usages
+	│       ├── bluetooth
+	│       │   └── node
+	│       ├── nodered
+	│       └── scripts
+	│           ├── 6axis
+	│           │   └── __pycache__
+	│           ├── lora
+	│           └── __pycache__
+	├── rocky-linux
+	│   └── docker
+	│       ├── eclipse-mosquitto
+	│       └── node-red
+	└── sensors-examples
+	├── grove_6_axis
+	│   ├── LSM6DS3-for-Raspberry-Pi
+	│   └── __pycache__
+	└── __pycache__
+\end{lstlisting}

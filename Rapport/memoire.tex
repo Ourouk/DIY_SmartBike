@@ -9,7 +9,10 @@
 \usepackage{setspace}
 \usepackage[sfdefault]{carlito}
 \usepackage{listings}
+\usepackage{listings}
 \usepackage{xcolor}
+
+
 
 % Define YAML style
 \lstdefinelanguage{YAML}{
@@ -36,6 +39,13 @@
 	breakautoindent=true,
 	captionpos=b
 }
+
+\lstdefinestyle{tree}{
+	basicstyle=\ttfamily,
+	literate={├}{|}1 {─}{--}1 {│}{|}1 {└}{+}1,
+	moredelim=[is][\color{blue}\bfseries]{<}{>}
+}
+
 
 \renewcommand{\baselinestretch}{0}
 \usepackage[french, english]{babel}   %langue française et anglais. Si vous utilisez d'autres langues, ajoutez-les ici. Quand vous avez du texte en anglais, il faut ajouter la commande \selectlanguage{english}. Après, rappelez-vous de revenir au français avec \selectlanguage{french}
@@ -133,6 +143,7 @@
 %dans les fichier vous trouverez des exemples d'usage des différentes commandes de LaTeX
 \begin{onehalfspace}
 \thispagestyle{empty}
+	\input{textes/layer0.tex}
    	\input{textes/layer1.tex}
    	\input{textes/layer2.tex}
    	\input{textes/layer3.tex}
