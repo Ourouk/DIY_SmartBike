@@ -47,7 +47,7 @@
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 
 // GPS PINS 
-#define RXD2 16  // 4  // BREAK OLED it s normal
+#define RXD2 4 // 4  // 16 BREAK OLED 
 #define TXD2 17  // 5
 
 //CRC 
@@ -121,8 +121,8 @@ void loop() {
   //Send LoRa packet to receiver
   std::string buff;char buffer[20];
   buff.append("{name:");
-  buff.append("Rpi");
-  buff.append(",satel:");
+  buff.append("\"Rpi\"");
+  buff.append(",sat:");
   std::sprintf(buffer, "%u", gps.satellites.value());
   buff.append(buffer);
   buff.append(",lon:");

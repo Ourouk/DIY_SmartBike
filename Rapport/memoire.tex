@@ -9,10 +9,7 @@
 \usepackage{setspace}
 \usepackage[sfdefault]{carlito}
 \usepackage{listings}
-\usepackage{listings}
 \usepackage{xcolor}
-
-
 
 % Define YAML style
 \lstdefinelanguage{YAML}{
@@ -39,13 +36,6 @@
 	breakautoindent=true,
 	captionpos=b
 }
-
-\lstdefinestyle{tree}{
-	basicstyle=\ttfamily,
-	literate={├}{|}1 {─}{--}1 {│}{|}1 {└}{+}1,
-	moredelim=[is][\color{blue}\bfseries]{<}{>}
-}
-
 
 \renewcommand{\baselinestretch}{0}
 \usepackage[french, english]{babel}   %langue française et anglais. Si vous utilisez d'autres langues, ajoutez-les ici. Quand vous avez du texte en anglais, il faut ajouter la commande \selectlanguage{english}. Après, rappelez-vous de revenir au français avec \selectlanguage{french}
@@ -119,14 +109,7 @@
 
 
 \input{titres/titre.tex}
-%\input{titres/garde.tex}
 
-%\pagenumbering{roman} % numérotation en chiffres romains
-%\setcounter{page}{1}
-
-%\input{titres/resume.tex}
-%\input{titres/abstract.tex}
-%\input{titres/remerciements.tex}
 
 \begin{singlespace}
     \selectlanguage{french}
@@ -134,16 +117,13 @@
     %\listoffigures % si vous avez des images... si vous n'en avez pas, effacez cette ligne
 \end{singlespace}
 
-% fin numérotation en chiffres romains
-% début numérotation en chiffres arabs3
 \pagenumbering{arabic}
 \setcounter{page}{0}
 
 
-%dans les fichier vous trouverez des exemples d'usage des différentes commandes de LaTeX
+
 \begin{onehalfspace}
 \thispagestyle{empty}
-	\input{textes/layer0.tex}
    	\input{textes/layer1.tex}
    	\input{textes/layer2.tex}
    	\input{textes/layer3.tex}
